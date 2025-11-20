@@ -14,6 +14,7 @@ const splitTextIntoChunks = (text, maxLength = 4096) => {
     if (splitIndex === -1) splitIndex = currentText.lastIndexOf('\n', maxLength);
     if (splitIndex === -1) splitIndex = currentText.lastIndexOf(' ', maxLength);
     if (splitIndex === -1) splitIndex = maxLength;
+    
     chunks.push(currentText.slice(0, splitIndex + 1));
     currentText = currentText.slice(splitIndex + 1).trim();
   }
@@ -255,11 +256,12 @@ export default function VoiceGeneratorApp() {
   };
 
   const fetchAudioChunk = async (inputText) => {
-    // --- VERCEL ENVIRONMENT KEY ACCESS ---
+    // VERCEL FIX: Use import.meta.env for API Key
+    // Agar key na ho to error throw karo.
     const apiKey = import.meta.env.VITE_GOOGLE_API_KEY; 
     
     if (!apiKey) {
-        throw new Error("API Key Missing! Please add VITE_GOOGLE_API_KEY in Vercel Environment Variables.");
+        throw new Error("API Key Missing! Check Vercel Environment Variables.");
     }
 
     let finalText = optimizeScriptForHumanSpeech(inputText);
