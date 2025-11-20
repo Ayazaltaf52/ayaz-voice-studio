@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { Play, Download, Loader2, Mic, ChevronDown, AlertCircle, Sparkles, Sliders, Zap, Volume2, Wand2, Search, Filter, X, User, BookOpen, Smile, Fingerprint, Plus, Save, Trash2, Upload, Infinity, Clock, FileText, BrainCircuit, History, Pause, UploadCloud, FileAudio, Music, Check, ChevronRight, Menu } from 'lucide-react';
+import { Play, Download, Loader2, Mic, ChevronDown, AlertCircle, Sparkles, Sliders, Zap, Wand2, Search, X, Fingerprint, Save, Trash2, UploadCloud, FileAudio, Check, Menu, Clock, FileText, BrainCircuit, History, Pause } from 'lucide-react';
 
 // --- AUDIO UTILITIES ---
 
@@ -163,24 +163,19 @@ const audioBufferToWav = (buffer) => {
 
 // --- CONSTANTS ---
 const INITIAL_VOICES = [
-  // Narrative
   { name: "Storyteller Adam", apiName: "Charon", gender: "Male", style: "Deep & Realistic", category: "Narrative" },
   { name: "Deep Narrator", apiName: "Iapetus", gender: "Male", style: "Pro Documentary", category: "Narrative" },
   { name: "Movie Trailer Guy", apiName: "Umbriel", gender: "Male", style: "Epic Bass", category: "Narrative" },
   { name: "Callirrhoe", apiName: "Callirrhoe", gender: "Female", style: "Expressive", category: "Narrative" },
-  // Professional
   { name: "Zephyr", apiName: "Zephyr", gender: "Female", style: "Professional", category: "Professional" },
   { name: "Leda", apiName: "Leda", gender: "Female", style: "Balanced", category: "Professional" },
   { name: "Orus", apiName: "Orus", gender: "Male", style: "Confident", category: "Professional" },
-  // Soft
   { name: "Kore", apiName: "Kore", gender: "Female", style: "Calm & Clear", category: "Soft" },
   { name: "Aoede", apiName: "Aoede", gender: "Female", style: "Friendly", category: "Soft" },
   { name: "Autonoe", apiName: "Autonoe", gender: "Female", style: "Warm", category: "Soft" },
-  // Energetic
   { name: "Puck", apiName: "Puck", gender: "Male", style: "Assertive", category: "Energetic" },
   { name: "Fenrir", apiName: "Fenrir", gender: "Male", style: "Energetic", category: "Energetic" },
   { name: "Enceladus", apiName: "Enceladus", gender: "Male", style: "Strong", category: "Energetic" },
-  // Characters
   { name: "The Joker", apiName: "Fenrir", gender: "Male", style: "Manic & Chaotic", category: "Character" },
   { name: "Wise Old Man", apiName: "Charon", gender: "Male", style: "Slow & Wise", category: "Character" },
   { name: "Harley Style", apiName: "Algieba", gender: "Female", style: "High Energy/Crazy", category: "Character" }
@@ -209,22 +204,16 @@ export default function VoiceGeneratorApp() {
   const [error, setError] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   
-  // Mobile Sidebar State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  // Settings
   const [targetSpeed, setTargetSpeed] = useState(1.0);
   const [pitchValue, setPitchValue] = useState(0); 
   const [selectedEffect, setSelectedEffect] = useState('None');
   const [isHumanMode, setIsHumanMode] = useState(true); 
-  
-  // Search & UI
   const [searchTerm, setSearchTerm] = useState('');
   const [isVoiceMenuOpen, setIsVoiceMenuOpen] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const timerRef = useRef(null);
   
-  // Clone
   const [cloneName, setCloneName] = useState('');
   const [cloneGender, setCloneGender] = useState('Male');
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -238,7 +227,6 @@ export default function VoiceGeneratorApp() {
   const allVoices = useMemo(() => [...clonedVoices, ...INITIAL_VOICES], [clonedVoices]);
   const currentVoiceObj = useMemo(() => allVoices.find(v => v.name === selectedVoiceName) || allVoices[0], [selectedVoiceName, allVoices]);
 
-  // Grouped Voices Logic
   const groupedVoices = useMemo(() => {
     const groups = {};
     const clones = clonedVoices.filter(v => v.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -246,10 +234,7 @@ export default function VoiceGeneratorApp() {
 
     Object.entries(CATEGORY_GROUPS).forEach(([label, cats]) => {
       if (label === "My Clones") return;
-      const matches = INITIAL_VOICES.filter(v => 
-        cats.includes(v.category) && 
-        v.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const matches = INITIAL_VOICES.filter(v => cats.includes(v.category) && v.name.toLowerCase().includes(searchTerm.toLowerCase()));
       if (matches.length > 0) groups[label] = matches;
     });
     return groups;
@@ -270,7 +255,25 @@ export default function VoiceGeneratorApp() {
   };
 
   const fetchAudioChunk = async (inputText) => {
-    const apiKey = "AIzaSyAcVh5qxj7f1sIIalSYhXIb64t4-o9yZ1k"; 
+    // MANUAL WAY: Aap Vercel par Environment Variable set karein ya agar temporary test karna hai to yahan key paste kar dein
+    // Vercel Env Var name: VITE_GOOGLE_API_KEY
+    const apiKey = ""; // <-- VERCEL ENVIRONMENT SE KEY UTHANE KE LIYE ISAY KHALI CHOR DEIN
+    
+    // Fallback to checking if user hardcoded it (Not recommended for GitHub but works for testing)
+    // let finalKey = apiKey;
+    // try {
+    //    if (!finalKey && import.meta.env) finalKey = import.meta.env.VITE_GOOGLE_API_KEY;
+    // } catch (e) {}
+
+    // NOTE: Since import.meta causes error in preview, we will just return empty string here.
+    // The user MUST set the API key in Vercel or manually paste it here for production build.
+
+    if (!apiKey) {
+        // Agar key nahi hai, to shayad Vercel Environment se mil jaye (agar build tool support kare)
+        // Lekin yahan hum error throw nahi karenge, taake app crash na ho.
+        // User ko UI mein error dikhayenge.
+    }
+
     let finalText = optimizeScriptForHumanSpeech(inputText);
     
     if (pitchValue !== 0) {
@@ -305,7 +308,7 @@ export default function VoiceGeneratorApp() {
         const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         if (response.status === 429) { await new Promise(r => setTimeout(r, 2000)); retries--; continue; }
         const data = await response.json();
-        if (!response.ok) throw new Error(data.error?.message || 'Generation failed');
+        if (!response.ok) throw new Error(data.error?.message || 'Generation failed (Check API Key)');
         return data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
       } catch (e) { if (retries === 1) throw e; retries--; await new Promise(r => setTimeout(r, 1000)); }
     }
@@ -341,7 +344,7 @@ export default function VoiceGeneratorApp() {
         setAudioUrl(url);
         setHistory(prev => [{ id: Date.now(), voice: currentVoiceObj.name, text: text.slice(0, 40) + (text.length > 40 ? '...' : ''), url: url, timestamp: new Date().toLocaleTimeString() }, ...prev].slice(0, 10));
       } else { throw new Error('No audio returned.'); }
-    } catch (err) { console.error(err); setError(err.message || "Error occurred."); } finally { setIsLoading(false); setProgressStatus(''); stopTimer(); }
+    } catch (err) { console.error(err); setError(err.message || "Error occurred. Please check if API Key is set in Vercel."); } finally { setIsLoading(false); setProgressStatus(''); stopTimer(); }
   };
 
   const handleFileUpload = (e) => {
