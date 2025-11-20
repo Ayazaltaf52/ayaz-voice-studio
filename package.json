@@ -1,20 +1,6 @@
-{
-  "name": "ayaz-voice-studio",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "lucide-react": "^0.263.1"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.3",
-    "vite": "^4.4.5"
-  }
+"scripts": {
+  "dev": "vite",
+  "prebuild": "node -e \"console.log('PWD:', process.cwd()); const fs=require('fs'); console.log('FILES:'); console.log(require('child_process').execSync('ls -la').toString());\"",
+  "build": "vite build",
+  "preview": "vite preview"
 }
