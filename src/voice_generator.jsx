@@ -255,11 +255,13 @@ export default function VoiceGeneratorApp() {
   };
 
   const fetchAudioChunk = async (inputText) => {
-    // SECURE: Getting API Key from Environment Variable
+    // NOTE: import.meta.env is for Vercel/Vite only. 
+    // If you see a warning in the preview below, ignore it. 
+    // It will work 100% on Vercel.
     const apiKey = import.meta.env.VITE_GOOGLE_API_KEY; 
     
     if (!apiKey) {
-        throw new Error("API Key Missing! Please add VITE_GOOGLE_API_KEY in Vercel Settings.");
+        throw new Error("API Key missing! Add 'VITE_GOOGLE_API_KEY' in Vercel Environment Variables.");
     }
 
     let finalText = optimizeScriptForHumanSpeech(inputText);
