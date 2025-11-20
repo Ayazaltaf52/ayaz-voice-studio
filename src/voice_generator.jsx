@@ -270,7 +270,7 @@ export default function VoiceGeneratorApp() {
   };
 
   const fetchAudioChunk = async (inputText) => {
-    const apiKey = ""; 
+    const apiKey = "AIzaSyAcVh5qxj7f1sIIalSYhXIb64t4-o9yZ1k"; 
     let finalText = optimizeScriptForHumanSpeech(inputText);
     
     if (pitchValue !== 0) {
