@@ -308,7 +308,7 @@ export default function App() {
   };
 
   const fetchAudioChunk = async (inputText, targetVoiceApiName = null) => {
-    const apiKey = ""; 
+    const apiKey = "AIzaSyC6re0Dgs11p7SA_jfmzpc5wAzNVHncUl8"; 
     let finalText = optimizeScriptForHumanSpeech(inputText);
     let instructions = "";
 
