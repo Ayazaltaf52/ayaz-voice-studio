@@ -308,7 +308,7 @@ export default function App() {
   };
 
   const fetchAudioChunk = async (inputText, targetVoiceApiName = null) => {
-    const apiKey = process.env.REACT_APP_GEMINI_KEY || ""; 
+    const apiKey = import.meta.env.VITE_GEMINI_KEY || ""; 
     let finalText = optimizeScriptForHumanSpeech(inputText);
     let instructions = "";
 
